@@ -9,13 +9,17 @@
     "test": "jest"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
     "express": "^4.18.0",
     "interviewhub-ai": "file:..",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.0"
+    "joi": "^18.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^7.0.0",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "jest": "^29.0.0",
