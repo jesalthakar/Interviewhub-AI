@@ -1,0 +1,62 @@
+@use './variables.scss' as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background-color: $color-dark-bg;
+  color: $color-text-primary;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $color-dark-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $color-input-border;
+  border-radius: $border-radius-full;
+
+  &:hover {
+    background: $color-accent-lime;
+  }
+}
+
+/* Utility Classes */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+
+  @include media-md {
+    padding: 0 $spacing-md;
+  }
+
+  @include media-sm {
+    padding: 0 $spacing-md;
+  }
+}

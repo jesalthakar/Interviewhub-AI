@@ -1,0 +1,62 @@
+@use '../../styles/variables.scss' as *;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  border: none;
+  border-radius: $border-radius-full;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  font-family: $font-family-primary;
+  cursor: pointer;
+  transition: all $transition-base;
+  outline: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Primary Button */
+  &.primary {
+    background-color: $color-accent-lime;
+    color: $color-dark-bg;
+
+    &:hover:not(:disabled) {
+      background-color: $color-accent-lime-hover;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba($color-accent-lime, 0.3);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba($color-accent-lime, 0.2);
+    }
+  }
+
+  /* Secondary Button */
+  &.secondary {
+    background-color: $color-dark-secondary;
+    color: $color-text-primary;
+    border: 1px solid $color-input-border;
+
+    &:hover:not(:disabled) {
+      border-color: $color-accent-lime;
+      color: $color-accent-lime;
+    }
+  }
+
+  /* Full Width */
+  &.full-width {
+    width: 100%;
+  }
+
+  /* Icon styling */
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
