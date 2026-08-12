@@ -1,0 +1,525 @@
+@use '../../styles/variables.scss' as *;
+
+.interview-session-page {
+  min-height: 100vh;
+  background-color: $color-dark-bg;
+  color: $color-text-primary;
+  padding: $spacing-lg $spacing-xl;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  font-family: $font-family-primary;
+
+  @include media-md {
+    padding: $spacing-md;
+  }
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+.session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $color-input-border;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+
+  .header-meta {
+    .role-title {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+      margin: 0 0 $spacing-xs 0;
+    }
+
+    .meta-badges {
+      display: flex;
+      gap: $spacing-xs;
+
+      .badge {
+        font-size: $font-size-xs;
+        padding: 4px 10px;
+        border-radius: $border-radius-full;
+        text-transform: capitalize;
+        font-weight: $font-weight-medium;
+
+        &.badge-level {
+          background-color: rgba($color-accent-lime, 0.15);
+          color: $color-accent-lime;
+          border: 1px solid rgba($color-accent-lime, 0.3);
+        }
+
+        &.badge-difficulty {
+          background-color: rgba($color-text-secondary, 0.15);
+          color: $color-text-secondary;
+          border: 1px solid rgba($color-text-secondary, 0.3);
+        }
+      }
+    }
+  }
+
+  .session-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: $color-dark-secondary;
+    padding: 8px 16px;
+    border-radius: $border-radius-md;
+    border: 1px solid $color-input-border;
+    color: $color-accent-lime;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-lg;
+    letter-spacing: 1px;
+
+    .timer-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    &.warning {
+      color: #ffd43b;
+      border-color: rgba(#ffd43b, 0.4);
+    }
+
+    &.critical {
+      color: $color-error;
+      border-color: rgba($color-error, 0.5);
+      animation: pulse-border 1.5s infinite;
+    }
+  }
+
+  .btn-finish {
+    background-color: transparent;
+    border: 1px solid $color-input-border;
+    color: $color-text-secondary;
+    padding: 8px 18px;
+    border-radius: $border-radius-md;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: $transition-fast;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: $color-text-primary;
+      border-color: $color-text-secondary;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba($color-error, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba($color-error, 0); }
+  100% { box-shadow: 0 0 0 0 rgba($color-error, 0); }
+}
+
+/* ==========================================
+   PROGRESS BAR & CHECKPOINTS
+   ========================================== */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  .progress-summary {
+    display: flex;
+    justify-content: space-between;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+
+    .progress-counts {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+
+        &.dot-answered { background-color: $color-success; }
+        &.dot-skipped { background-color: #ff922b; }
+      }
+    }
+  }
+
+  .checkpoint-track {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    overflow-x: auto;
+    padding-bottom: 4px;
+
+    .checkpoint-btn {
+      flex: 1;
+      min-width: 36px;
+      height: 40px;
+      border-radius: $border-radius-md;
+      border: 1px solid $color-input-border;
+      background-color: $color-dark-secondary;
+      color: $color-text-secondary;
+      font-weight: $font-weight-semibold;
+      font-size: $font-size-sm;
+      cursor: pointer;
+      transition: $transition-fast;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        border-color: $color-accent-lime;
+        color: $color-text-primary;
+      }
+
+      &.status-answered {
+        background-color: rgba($color-success, 0.15);
+        border-color: rgba($color-success, 0.4);
+        color: $color-success;
+      }
+
+      &.status-skipped {
+        background-color: rgba(#ff922b, 0.15);
+        border-color: rgba(#ff922b, 0.4);
+        color: #ff922b;
+      }
+
+      &.active {
+        border-color: $color-accent-lime !important;
+        box-shadow: 0 0 0 2px rgba($color-accent-lime, 0.3);
+        color: $color-accent-lime;
+      }
+    }
+  }
+}
+
+/* ==========================================
+   SKIPPED REVIEW BANNER
+   ========================================== */
+.skipped-review-banner {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background-color: rgba(#ff922b, 0.12);
+  border: 1px solid rgba(#ff922b, 0.3);
+  color: #ffd8a8;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+}
+
+/* ==========================================
+   MAIN QUESTION CARD
+   ========================================== */
+.question-card {
+  background-color: $color-dark-secondary;
+  border: 1px solid $color-input-border;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    .question-number {
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      color: $color-accent-lime;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .question-category {
+      font-size: $font-size-xs;
+      background-color: rgba(255, 255, 255, 0.08);
+      padding: 2px 8px;
+      border-radius: $border-radius-sm;
+      color: $color-text-secondary;
+    }
+  }
+
+  .question-text {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    line-height: 1.5;
+    margin: 0;
+    color: $color-text-primary;
+  }
+
+  .answer-section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    .answer-label {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text-secondary;
+    }
+
+    .answer-textarea {
+      background-color: $color-dark-bg;
+      border: 1px solid $color-input-border;
+      border-radius: $border-radius-md;
+      padding: $spacing-md;
+      color: $color-text-primary;
+      font-family: inherit;
+      font-size: $font-size-base;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      transition: $transition-fast;
+
+      &:focus {
+        border-color: $color-accent-lime;
+        box-shadow: 0 0 0 1px $color-accent-lime;
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+
+    .textarea-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: $font-size-xs;
+
+      .validation-hint {
+        .hint-neutral { color: $color-text-secondary; }
+        .hint-warning { color: #ffd43b; }
+        .hint-info { color: #74c0fc; }
+        .hint-success { color: $color-success; font-weight: $font-weight-medium; }
+      }
+
+      .char-count {
+        color: $color-text-secondary;
+      }
+    }
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-md;
+    padding-top: $spacing-sm;
+
+    .btn-skip {
+      background-color: transparent;
+      border: 1px solid rgba(#ff922b, 0.4);
+      color: #ff922b;
+      padding: 10px 20px;
+      border-radius: $border-radius-md;
+      font-weight: $font-weight-medium;
+      cursor: pointer;
+      transition: $transition-fast;
+
+      &:hover:not(:disabled) {
+        background-color: rgba(#ff922b, 0.12);
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-submit {
+      background-color: $color-accent-lime;
+      color: $color-dark-bg;
+      border: none;
+      padding: 10px 24px;
+      border-radius: $border-radius-md;
+      font-weight: $font-weight-semibold;
+      cursor: pointer;
+      transition: $transition-fast;
+
+      &:hover:not(:disabled) {
+        background-color: $color-accent-lime-hover;
+      }
+
+      &:disabled {
+        background-color: rgba($color-accent-lime, 0.3);
+        color: rgba($color-dark-bg, 0.6);
+        cursor: not-allowed;
+      }
+
+      .btn-loading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+}
+
+/* ==========================================
+   CONFIRM MODAL
+   ========================================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-md;
+
+  .confirm-modal {
+    background-color: $color-dark-secondary;
+    border: 1px solid $color-input-border;
+    border-radius: $border-radius-lg;
+    padding: $spacing-xl;
+    max-width: 440px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+
+    h3 {
+      font-size: $font-size-xl;
+      margin: 0;
+      color: $color-text-primary;
+    }
+
+    p {
+      color: $color-text-secondary;
+      font-size: $font-size-sm;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .modal-summary {
+      display: flex;
+      justify-content: space-around;
+      background-color: $color-dark-bg;
+      padding: $spacing-md;
+      border-radius: $border-radius-md;
+      border: 1px solid $color-input-border;
+
+      .summary-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .count {
+          font-size: $font-size-xl;
+          font-weight: $font-weight-semibold;
+
+          &.success { color: $color-success; }
+          &.warning { color: #ff922b; }
+          &.neutral { color: $color-text-secondary; }
+        }
+
+        .label {
+          font-size: $font-size-xs;
+          color: $color-text-secondary;
+        }
+      }
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: $spacing-sm;
+      margin-top: $spacing-xs;
+
+      .btn-modal-cancel {
+        background-color: transparent;
+        border: 1px solid $color-input-border;
+        color: $color-text-secondary;
+        padding: 8px 16px;
+        border-radius: $border-radius-md;
+        cursor: pointer;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.05);
+          color: $color-text-primary;
+        }
+      }
+
+      .btn-modal-confirm {
+        background-color: $color-accent-lime;
+        color: $color-dark-bg;
+        border: none;
+        padding: 8px 20px;
+        border-radius: $border-radius-md;
+        font-weight: $font-weight-semibold;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $color-accent-lime-hover;
+        }
+      }
+    }
+  }
+}
+
+/* ==========================================
+   SPINNERS & LOADING
+   ========================================== */
+.session-loading-container,
+.session-error-container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-md;
+  color: $color-text-secondary;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba($color-accent-lime, 0.2);
+  border-top-color: $color-accent-lime;
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+
+.spinner-small {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba($color-dark-bg, 0.3);
+  border-top-color: $color-dark-bg;
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-banner {
+  background-color: rgba($color-error, 0.15);
+  border: 1px solid rgba($color-error, 0.4);
+  color: $color-error;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+}

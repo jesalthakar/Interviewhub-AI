@@ -72,6 +72,7 @@ const InterviewSchema = new Schema(
     },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], required: true },
     questionCount: { type: Number, required: true, min: 1, max: 30 },
+    durationMinutes: { type: Number, required: true, min: 1 },
     status: {
       type: String,
       enum: ['draft', 'in_progress', 'completed', 'abandoned'],
