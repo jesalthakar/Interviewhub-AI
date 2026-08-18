@@ -82,7 +82,6 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const payload = { userId: user._id.toString(), email: user.email };
     const token = signAccessToken(user);
     const refreshToken = signRefreshToken(user);
 
@@ -97,9 +96,17 @@ exports.login = async (req, res, next) => {
       expiresAt: refreshExpiresAt,
     });
 
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     logger.info('User logged in', { id: user._id.toString(), email: user.email });
 
-    return res.status(200).json({ token, refreshToken, user: { id: user._id, email: user.email } });
+    return res.status(200).json({ token, user: { id: user._id, email: user.email } });
   } catch (err) {
     logger.error('Login error', err);
     next(err);
@@ -111,32 +118,28 @@ exports.logout = async (req, res, next) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
-    if (!token) {
-      logger.warn('Logout attempt without token');
-      return res.status(400).json({ message: 'Authorization token required' });
+    if (token) {
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (err) {
+        logger.warn('Logout with invalid token');
+      }
+
+      if (decoded) {
+        const expiresAt = decoded.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 3600 * 1000);
+
+        try {
+          await BlacklistedToken.create({ token, expiresAt });
+        } catch (e) {
+          logger.warn('Failed to save blacklisted token (may be duplicate)', e.message || e);
+        }
+
+        logger.info('User logged out', { user: decoded.userId, email: decoded.email });
+      }
     }
 
-    // Verify token to read expiry
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
-      // Token invalid or already expired — treat as logged out
-      logger.warn('Logout with invalid token');
-      return res.status(200).json({ message: 'Logged out' });
-    }
-
-    const expiresAt = decoded.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 3600 * 1000);
-
-    // Save to blacklist (ignore duplicates)
-    try {
-      await BlacklistedToken.create({ token, expiresAt });
-    } catch (e) {
-      // Duplicate key or other error — log but continue
-      logger.warn('Failed to save blacklisted token (may be duplicate)', e.message || e);
-    }
-
-    logger.info('User logged out', { user: decoded.userId, email: decoded.email });
+    res.clearCookie('refreshToken', { path: '/', httpOnly: true, sameSite: 'lax' });
     return res.status(200).json({ message: 'Logged out' });
   } catch (err) {
     logger.error('Logout error', err);
@@ -146,13 +149,12 @@ exports.logout = async (req, res, next) => {
 
 exports.refreshToken = async (req, res, next) => {
   try {
-    const { refreshToken } = req.body || {};
+    const refreshToken = req.cookies?.refreshToken;
     if (!refreshToken) {
-      logger.warn('Refresh token request missing token');
-      return res.status(400).json({ message: 'Refresh token required' });
+      logger.warn('Refresh token request missing cookie token');
+      return res.status(401).json({ message: 'Refresh token required' });
     }
 
-    // Verify refresh token signature
     let decoded;
     try {
       decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
@@ -176,13 +178,11 @@ exports.refreshToken = async (req, res, next) => {
     const accessToken = signAccessToken(user);
     const newRefreshToken = signRefreshToken(user);
 
-    // compute new expiry from token payload
     const decodedNew = jwt.decode(newRefreshToken);
     const newExpiresAt = decodedNew && decodedNew.exp
       ? new Date(decodedNew.exp * 1000)
       : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-    // atomically rotate only if the stored token still matches (prevents replay)
     const updated = await RefreshToken.findOneAndUpdate(
       { _id: stored._id, token: refreshToken },
       { token: newRefreshToken, expiresAt: newExpiresAt, updatedAt: new Date() },
@@ -194,8 +194,16 @@ exports.refreshToken = async (req, res, next) => {
       return res.status(401).json({ message: 'Refresh token revoked or invalid' });
     }
 
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     logger.info('Refresh token rotated', { userId: user._id.toString(), email: user.email });
-    return res.status(200).json({ token: accessToken, refreshToken: newRefreshToken });
+    return res.status(200).json({ token: accessToken });
   } catch (err) {
     logger.error('Refresh token error', err);
     next(err);

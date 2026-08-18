@@ -8,5 +8,6 @@ router.get('/health', (req, res) => {
 
 // Mount auth routes
 router.use('/auth', require('./auth'));
+router.use('/interviews', require('./interviews'));
 
 module.exports = router;
