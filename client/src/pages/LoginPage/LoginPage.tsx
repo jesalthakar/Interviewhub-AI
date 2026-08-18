@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import FormContainer from '../../components/FormContainer/FormContainer';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
+import { setAccessToken } from '../../services/auth';
 import './LoginPage.scss';
 
 interface LoginFormData {
@@ -14,7 +15,6 @@ interface LoginFormData {
 
 interface LoginResponse {
   token: string;
-  refreshToken: string;
   user: { id: string; email: string };
 }
 
@@ -32,6 +32,7 @@ const LoginPage: React.FC = () => {
   const [submitError, setSubmitError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   // Placeholder handlers - to be implemented with logic later
   const handleInputChange = (
@@ -55,13 +56,11 @@ const LoginPage: React.FC = () => {
       const { data } = await axios.post<LoginResponse>('/api/auth/login', {
         email: formData.email,
         password: formData.password,
-      });
-      const storage = formData.rememberMe ? window.localStorage : window.sessionStorage;
-      const otherStorage = formData.rememberMe ? window.sessionStorage : window.localStorage;
+      }, { withCredentials: true });
 
-      otherStorage.removeItem('auth');
-      storage.setItem('auth', JSON.stringify(data));
+      setAccessToken(data.token);
       setSuccessMessage('Signed in successfully.');
+      navigate('/setup');
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
         ? error.response?.data?.message
