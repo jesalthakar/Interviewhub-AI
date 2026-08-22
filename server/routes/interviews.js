@@ -1,19 +1,31 @@
 const express = require('express');
 const authenticate = require('../middleware/authMiddleware');
 const {
+  getUserInterviews,
   createInterview,
   getInterviewById,
+  pauseInterview,
+  resumeInterview,
   submitAnswer,
   finishInterview,
 } = require('../controllers/interviewController');
 
 const router = express.Router();
 
+// GET /api/interviews - Fetch the authenticated user's interview history
+router.get('/', authenticate, getUserInterviews);
+
 // POST /api/interviews - Create new interview & generate questions via Gemini AI
 router.post('/', authenticate, createInterview);
 
 // GET /api/interviews/:id - Fetch interview details
 router.get('/:id', authenticate, getInterviewById);
+
+// PATCH /api/interviews/:id/pause - Pause the interview timer while away
+router.patch('/:id/pause', authenticate, pauseInterview);
+
+// PATCH /api/interviews/:id/resume - Resume the interview timer
+router.patch('/:id/resume', authenticate, resumeInterview);
 
 // POST /api/interviews/:id/questions/:questionIndex/answer - Submit answer & get AI evaluation
 router.post('/:id/questions/:questionIndex/answer', authenticate, submitAnswer);

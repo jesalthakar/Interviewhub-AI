@@ -10,7 +10,6 @@ import './LoginPage.scss';
 interface LoginFormData {
   email: string;
   password: string;
-  rememberMe: boolean;
 }
 
 interface LoginResponse {
@@ -27,7 +26,6 @@ const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
-    rememberMe: false,
   });
   const [submitError, setSubmitError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -38,10 +36,10 @@ const LoginPage: React.FC = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
     setSubmitError('');
   };
@@ -60,7 +58,7 @@ const LoginPage: React.FC = () => {
 
       setAccessToken(data.token);
       setSuccessMessage('Signed in successfully.');
-      navigate('/setup');
+      navigate('/dashboard');
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
         ? error.response?.data?.message
@@ -130,16 +128,6 @@ const LoginPage: React.FC = () => {
               onChange={handleInputChange}
             />
 
-            <div className="remember-me">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                name="rememberMe"
-                checked={formData.rememberMe}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="rememberMe">Remember me</label>
-            </div>
           </div>
         </form>
       </FormContainer>

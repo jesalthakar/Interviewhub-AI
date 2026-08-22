@@ -114,6 +114,31 @@
       cursor: not-allowed;
     }
   }
+
+  .session-header-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  .btn-exit {
+    background: transparent;
+    border: 1px solid rgba($color-error, .5);
+    color: $color-error;
+    padding: 8px 18px;
+    border-radius: $border-radius-md;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: rgba($color-error, .1);
+    }
+
+    &:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+  }
 }
 
 @keyframes pulse-border {

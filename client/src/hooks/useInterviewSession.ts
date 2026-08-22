@@ -27,6 +27,8 @@ export interface Interview {
   difficulty: 'easy' | 'medium' | 'hard';
   questionCount: number;
   durationMinutes: number;
+  pausedDurationMs?: number;
+  pausedAt?: string;
   status: 'draft' | 'in_progress' | 'completed' | 'abandoned';
   currentQuestionIndex: number;
   questions: Question[];
@@ -79,11 +81,20 @@ export const useInterviewSession = () => {
         headers: getAuthHeader(),
       });
 
-      const fetchedInterview = data.interview;
+      let fetchedInterview = data.interview;
 
       if (fetchedInterview.status === 'completed' || fetchedInterview.status === 'abandoned') {
         navigate(`/interviews/${interviewId}/results`);
         return;
+      }
+
+      if (fetchedInterview.status === 'in_progress' && fetchedInterview.pausedAt) {
+        const resumeResponse = await axios.patch<{ interview: Interview }>(
+          `/api/interviews/${interviewId}/resume`,
+          {},
+          { headers: getAuthHeader() }
+        );
+        fetchedInterview = resumeResponse.data.interview;
       }
 
       setInterview(fetchedInterview);

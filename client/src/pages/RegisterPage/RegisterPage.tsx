@@ -10,14 +10,13 @@ interface RegisterFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  acceptedTerms: boolean;
 }
 
 type FormErrors = Partial<Record<keyof RegisterFormData, string>>;
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState<RegisterFormData>({
-    email: '', password: '', confirmPassword: '', acceptedTerms: false,
+    email: '', password: '', confirmPassword: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState('');
@@ -82,11 +81,6 @@ const RegisterPage: React.FC = () => {
             <Input label="Email Address" name="email" type="email" placeholder="you@example.com" value={formData.email} onChange={handleInputChange} error={errors.email} autoComplete="email" />
             <Input label="Password" name="password" type="password" placeholder="Enter your password" value={formData.password} onChange={handleInputChange} error={errors.password} autoComplete="new-password" tooltip="Strong password: 9+ characters, including an uppercase letter, number, and special character." />
             <Input label="Confirm Password" name="confirmPassword" type="password" placeholder="Re-enter your password" value={formData.confirmPassword} onChange={handleInputChange} error={errors.confirmPassword} autoComplete="new-password" />
-            <div className="terms-consent">
-              <input id="acceptedTerms" name="acceptedTerms" type="checkbox" checked={formData.acceptedTerms} onChange={handleInputChange} />
-              <label htmlFor="acceptedTerms">I agree to the <a href="#terms">Terms</a> and <a href="#privacy">Privacy Policy</a>.</label>
-            </div>
-            {errors.acceptedTerms && <p className="terms-error">{errors.acceptedTerms}</p>}
           </div>
         </form>
       </FormContainer>

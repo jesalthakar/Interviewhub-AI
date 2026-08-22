@@ -15,46 +15,6 @@
   max-width: 480px;
 }
 
-.terms-consent {
-  display: flex;
-  align-items: flex-start;
-  gap: $spacing-sm;
-  color: $color-text-secondary;
-  font-size: $font-size-sm;
-  line-height: 1.5;
-
-  input {
-    width: 18px;
-    height: 18px;
-    flex: 0 0 auto;
-    margin-top: 2px;
-    cursor: pointer;
-    accent-color: $color-accent-lime;
-  }
-
-  label {
-    cursor: pointer;
-  }
-
-  a {
-    color: $color-accent-lime;
-    text-decoration: none;
-  }
-
-  a:hover {
-    color: $color-accent-lime-hover;
-    text-decoration: underline;
-  }
-}
-
-.terms-error {
-  align-self: flex-start;
-  margin: -$spacing-sm 0 0;
-  color: $color-error;
-  font-size: $font-size-sm;
-  text-align: left;
-}
-
 .form-error,
 .form-success {
   align-self: flex-start;
