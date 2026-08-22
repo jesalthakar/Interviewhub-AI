@@ -23,6 +23,25 @@ const submitAnswerSchema = Joi.object({
 });
 
 /**
+ * Get the authenticated user's interviews for dashboard/history views
+ */
+exports.getUserInterviews = async (req, res, next) => {
+  try {
+    const interviews = await Interview.find({ user: req.user.userId })
+      .sort({ updatedAt: -1 })
+      .select(
+        'role experienceLevel skills difficulty status questionCount durationMinutes evaluationStatus overallFeedback startedAt completedAt lastActivityAt updatedAt'
+      )
+      .lean();
+
+    return res.status(200).json({ interviews });
+  } catch (error) {
+    logger.error('Get user interviews error', error);
+    next(error);
+  }
+};
+
+/**
  * Create new interview and generate questions via Gemini AI
  */
 exports.createInterview = async (req, res, next) => {
@@ -128,6 +147,70 @@ exports.getInterviewById = async (req, res, next) => {
 };
 
 /**
+ * Pause an in-progress interview while the candidate is away.
+ */
+exports.pauseInterview = async (req, res, next) => {
+  try {
+    const interview = await Interview.findOne({
+      _id: req.params.id,
+      user: req.user.userId,
+    });
+
+    if (!interview) {
+      return res.status(404).json({ message: 'Interview not found' });
+    }
+
+    if (interview.status !== 'in_progress') {
+      return res.status(400).json({ message: 'Only an in-progress interview can be paused' });
+    }
+
+    if (!interview.pausedAt) {
+      interview.pausedAt = new Date();
+      interview.lastActivityAt = new Date();
+      await interview.save();
+    }
+
+    return res.status(200).json({ message: 'Interview paused', interview });
+  } catch (error) {
+    logger.error('Pause interview error', error);
+    next(error);
+  }
+};
+
+/**
+ * Resume an in-progress interview and preserve the time spent paused.
+ */
+exports.resumeInterview = async (req, res, next) => {
+  try {
+    const interview = await Interview.findOne({
+      _id: req.params.id,
+      user: req.user.userId,
+    });
+
+    if (!interview) {
+      return res.status(404).json({ message: 'Interview not found' });
+    }
+
+    if (interview.status !== 'in_progress') {
+      return res.status(400).json({ message: 'Only an in-progress interview can be resumed' });
+    }
+
+    if (interview.pausedAt) {
+      const pausedDurationMs = Date.now() - interview.pausedAt.getTime();
+      interview.pausedDurationMs = (interview.pausedDurationMs || 0) + Math.max(0, pausedDurationMs);
+      interview.pausedAt = undefined;
+      interview.lastActivityAt = new Date();
+      await interview.save();
+    }
+
+    return res.status(200).json({ message: 'Interview resumed', interview });
+  } catch (error) {
+    logger.error('Resume interview error', error);
+    next(error);
+  }
+};
+
+/**
  * Submit answer for a specific question and evaluate via AI
  */
 exports.submitAnswer = async (req, res, next) => {
@@ -226,6 +309,7 @@ exports.finishInterview = async (req, res, next) => {
     });
 
     interview.status = 'completed';
+    interview.pausedAt = undefined;
     interview.completedAt = new Date();
     interview.lastActivityAt = new Date();
 

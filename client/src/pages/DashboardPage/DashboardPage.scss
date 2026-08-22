@@ -1,0 +1,44 @@
+@use '../../styles/variables.scss' as *;
+
+.dashboard-page { min-height: 100vh; background: $color-dark-bg; color: $color-text-primary; font-family: 'Trebuchet MS', 'Arial Rounded MT Bold', sans-serif; }
+.dashboard-header { display: flex; align-items: center; justify-content: space-between; max-width: 1180px; margin: 0 auto; padding: 28px 24px; border-bottom: 1px solid #303a27; }.dashboard-brand { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; letter-spacing: .03em; }.dashboard-brand em { color: $color-accent-lime; font-style: normal; }.dashboard-brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid $color-accent-lime; color: $color-accent-lime; font-size: 11px; }
+.dashboard-header-actions { display: flex; align-items: center; gap: 12px; }.dashboard-header .button { padding: 11px 18px; background: $color-dark-secondary; color: $color-accent-lime; font-size: 13px; }.dashboard-header .button:hover { background: #303d26; box-shadow: 0 8px 16px rgba(0, 0, 0, .2); }
+.dashboard-content { max-width: 1180px; margin: 0 auto; padding: 70px 24px 100px; }.dashboard-intro { display: flex; align-items: end; justify-content: space-between; gap: 24px; }.dashboard-intro h1 { margin: 12px 0 8px; font-family: 'Cooper Black', 'Arial Rounded MT Bold', Georgia, serif; font-size: clamp(40px, 5vw, 64px); font-weight: 900; line-height: .98; }.dashboard-intro h1 strong { color: $color-accent-lime; font-weight: inherit; }.dashboard-intro p:not(.dashboard-eyebrow) { color: $color-text-secondary; }.dashboard-eyebrow { margin: 0; color: $color-accent-lime; font-size: 11px; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; }.dashboard-intro .button { background: transparent; border: 1px solid $color-input-border; color: $color-text-primary; }.dashboard-intro .button:hover { border-color: $color-accent-lime; background: $color-dark-secondary; }
+.dashboard-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 58px; }.dashboard-stats article { min-height: 150px; padding: 22px; border: 1px solid $color-input-border; background: $color-dark-secondary; }.dashboard-stats span, .dashboard-stats small { display: block; color: $color-text-secondary; font-size: 12px; }.dashboard-stats strong { display: block; margin: 18px 0 6px; color: $color-text-primary; font-size: 38px; font-weight: 700; line-height: 1; }
+.history-section { margin-top: 76px; }.section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 22px; }.section-heading h2 { margin-top: 8px; font-family: 'Cooper Black', 'Arial Rounded MT Bold', Georgia, serif; font-size: 34px; font-weight: 900; }.section-heading > span { color: $color-text-secondary; font-size: 12px; }.interview-list { border-top: 1px solid $color-input-border; }.interview-row { display: grid; grid-template-columns: minmax(0, 1fr) 130px 100px; gap: 20px; align-items: center; padding: 20px 0; border-bottom: 1px solid $color-input-border; }.interview-main { display: flex; align-items: center; gap: 14px; }.status-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: #89947e; }.status-completed { background: $color-accent-lime; }.status-in_progress { background: #d79336; }.interview-row h3 { margin-bottom: 6px; font-size: 17px; }.interview-row p, .interview-score small { color: $color-text-secondary; font-size: 12px; }.interview-row p span { display: inline-block; width: 3px; height: 3px; margin: 0 6px 3px; border-radius: 50%; background: #536148; }.interview-score strong { display: block; font-size: 22px; }.interview-score small { display: block; margin-top: 5px; }.score-muted { color: #89947e; font-size: 14px !important; }.interview-row .button { padding: 9px 12px; border: 1px solid $color-input-border; background: transparent; color: $color-text-primary; font-size: 12px; }.interview-row .button:hover { border-color: $color-accent-lime; background: $color-dark-secondary; }
+.dashboard-empty { padding: 54px 24px; border: 1px dashed $color-input-border; text-align: center; }.dashboard-empty h3 { margin-bottom: 8px; font-size: 22px; }.dashboard-empty p { margin-bottom: 20px; color: $color-text-secondary; }.dashboard-message { margin-top: 24px; padding: 12px 14px; border: 1px solid rgba(255, 138, 196, .5); color: $color-error; background: rgba(255, 138, 196, .08); font-size: 13px; }
+@media (max-width: 768px) { .dashboard-content { padding-top: 48px; }.dashboard-intro { align-items: start; flex-direction: column; }.dashboard-stats { grid-template-columns: 1fr; margin-top: 42px; }.interview-row { grid-template-columns: minmax(0, 1fr) 86px; }.interview-row > .button { grid-column: 1 / -1; justify-self: start; }.interview-score { text-align: right; } }
+@media (max-width: 480px) { .dashboard-header { padding: 20px 16px; }.dashboard-header .button { padding: 10px 12px; }.dashboard-content { padding-right: 16px; padding-left: 16px; }.dashboard-intro h1 { font-size: 42px; }.section-heading h2 { font-size: 29px; }.interview-row { gap: 12px; }.interview-row h3 { font-size: 15px; }.interview-row p { line-height: 1.7; } }
+
+/* Interview history windows */
+.interview-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; border-top: 0; }
+.interview-card { padding: 22px; border: 2px solid $color-input-border; border-radius: 10px; background: $color-dark-secondary; box-shadow: 4px 5px 0 rgba(0, 0, 0, .2); }
+.interview-card-completed { border-color: $color-accent-lime; }
+.interview-card-in_progress { border-color: #d79336; }
+.interview-card-abandoned { border-color: #bd7373; }
+.interview-card-draft { border-color: #89947e; }
+.interview-card-status { display: flex; align-items: center; gap: 8px; color: $color-text-secondary; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.interview-card-status .status-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: #89947e; }
+.interview-card-status .status-completed { background: $color-accent-lime; }
+.interview-card-status .status-in_progress { background: #d79336; }
+.interview-card-status .status-abandoned { background: #bd7373; }
+.interview-card h3 { margin: 28px 0 24px; text-align: center; font-family: 'Cooper Black', 'Arial Rounded MT Bold', Georgia, serif; font-size: 27px; font-weight: 900; }
+.interview-card-details { display: flex; align-items: end; gap: 22px; padding-top: 18px; border-top: 1px solid $color-input-border; }
+.interview-card-details > div:not(.interview-card-result) { display: grid; gap: 5px; }
+.interview-card-details span, .interview-card-result small { color: $color-text-secondary; font-size: 11px; }
+.interview-card-details strong { font-size: 15px; text-transform: capitalize; }
+.interview-card-result { margin-left: auto; text-align: right; }
+.interview-card-result strong { display: block; font-size: 22px; }
+.interview-card-result small { display: block; margin-top: 5px; }
+.interview-card-actions { display: flex; justify-content: flex-end; margin-top: 22px; }
+.interview-card .button { padding: 9px 12px; border: 1px solid $color-input-border; background: transparent; color: $color-text-primary; font-size: 12px; }
+.interview-card .button:hover { border-color: $color-accent-lime; background: $color-dark-bg; }
+
+@media (max-width: 768px) {
+	.interview-list { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+	.interview-card-details { gap: 14px; }
+	.interview-card h3 { font-size: 23px; }
+}

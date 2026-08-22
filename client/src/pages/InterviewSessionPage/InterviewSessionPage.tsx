@@ -1,7 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import axios from '../../services/auth';
 import FinishConfirmModal from '../../components/InterviewSession/FinishConfirmModal';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import QuestionCard from '../../components/InterviewSession/QuestionCard';
 import QuestionProgress from '../../components/InterviewSession/QuestionProgress';
 import SessionHeader from '../../components/InterviewSession/SessionHeader';
@@ -12,6 +14,8 @@ import './InterviewSessionPage.scss';
 
 const InterviewSessionPage: React.FC = () => {
   const navigate = useNavigate();
+  const [showExitModal, setShowExitModal] = React.useState(false);
+  const [isExiting, setIsExiting] = React.useState(false);
   const {
     interview,
     currentIndex,
@@ -61,6 +65,7 @@ const InterviewSessionPage: React.FC = () => {
         isTimerWarning={isTimerWarning}
         isTimerCritical={isTimerCritical}
         isFinishing={isFinishing}
+        onExit={() => setShowExitModal(true)}
         onFinish={() => setShowConfirmModal(true)}
       />
 
@@ -110,6 +115,27 @@ const InterviewSessionPage: React.FC = () => {
           isFinishing={isFinishing}
           onCancel={() => setShowConfirmModal(false)}
           onConfirm={executeFinishInterview}
+        />
+      )}
+
+      {showExitModal && (
+        <ConfirmModal
+          title="Leave interview?"
+          message="Your submitted answers will be saved. This interview will remain in progress, and the timer will pause while you are away."
+          confirmLabel="Leave interview"
+          isProcessing={isExiting}
+          onCancel={() => setShowExitModal(false)}
+          onConfirm={async () => {
+            if (!interview) return;
+
+            try {
+              setIsExiting(true);
+              await axios.patch(`/api/interviews/${interview._id}/pause`);
+              navigate('/dashboard');
+            } catch {
+              setIsExiting(false);
+            }
+          }}
         />
       )}
     </div>

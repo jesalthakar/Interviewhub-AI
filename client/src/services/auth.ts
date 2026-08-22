@@ -14,6 +14,15 @@ export const clearAuthState = () => {
   accessToken = null;
 };
 
+export const signOut = async (): Promise<void> => {
+  try {
+    await axios.post('/api/auth/logout', {});
+  } finally {
+    clearAuthState();
+    window.location.replace('/login');
+  }
+};
+
 const isTokenNearExpiry = (token: string) => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));

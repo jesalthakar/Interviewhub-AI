@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../services/auth';
+import axios, { signOut } from '../../services/auth';
 import FormContainer from '../../components/FormContainer/FormContainer';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
@@ -93,6 +93,7 @@ const InterviewSetupPage: React.FC = () => {
 
   return (
     <div className="interview-setup-page">
+      <div className="setup-header"><Button variant="secondary" onClick={() => navigate('/dashboard')}>Dashboard</Button><Button variant="secondary" onClick={() => void signOut()}>Sign out</Button></div>
       <FormContainer
         title="Create Your Interview"
         subtitle="Tell us about your target role so we can generate a personalized interview."

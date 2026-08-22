@@ -16,7 +16,7 @@ export const useInterviewTimer = ({ interview, onExpire }: UseInterviewTimerProp
     const calculateTimeLeft = () => {
       const startedAt = new Date(interview.startedAt).getTime();
       const totalAllowedMs = interview.durationMinutes * 60 * 1000;
-      const elapsed = Date.now() - startedAt;
+      const elapsed = Date.now() - startedAt - (interview.pausedDurationMs || 0);
       const remainingMs = Math.max(0, totalAllowedMs - elapsed);
       return Math.floor(remainingMs / 1000);
     };

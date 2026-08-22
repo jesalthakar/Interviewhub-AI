@@ -46,25 +46,6 @@
   gap: $spacing-lg;
 }
 
-.remember-me {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  font-size: $font-size-sm;
-
-  input[type='checkbox'] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: $color-accent-lime;
-  }
-
-  label {
-    cursor: pointer;
-    color: $color-text-primary;
-  }
-}
-
 .sign-in-button {
   width: 100%;
 }

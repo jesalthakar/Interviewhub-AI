@@ -88,6 +88,8 @@ const InterviewSchema = new Schema(
     },
     overallFeedback: { type: OverallFeedbackSchema, default: undefined },
     startedAt: { type: Date },
+    pausedAt: { type: Date },
+    pausedDurationMs: { type: Number, min: 0, default: 0 },
     completedAt: { type: Date },
     lastActivityAt: { type: Date },
   },

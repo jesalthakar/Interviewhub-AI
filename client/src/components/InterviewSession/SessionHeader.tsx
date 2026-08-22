@@ -9,6 +9,7 @@ interface SessionHeaderProps {
   isTimerWarning: boolean;
   isTimerCritical: boolean;
   isFinishing: boolean;
+  onExit: () => void;
   onFinish: () => void;
 }
 
@@ -21,6 +22,7 @@ const SessionHeader: React.FC<SessionHeaderProps> = ({
   isTimerWarning,
   isTimerCritical,
   isFinishing,
+  onExit,
   onFinish,
 }) => {
   return (
@@ -45,9 +47,14 @@ const SessionHeader: React.FC<SessionHeaderProps> = ({
         <span className="timer-text">{formatTime(remainingSeconds)}</span>
       </div>
 
-      <button onClick={onFinish} className="btn-finish" disabled={isFinishing}>
-        Finish Interview
-      </button>
+      <div className="session-header-actions">
+        <button onClick={onExit} className="btn-exit" disabled={isFinishing}>
+          Exit interview
+        </button>
+        <button onClick={onFinish} className="btn-finish" disabled={isFinishing}>
+          Finish Interview
+        </button>
+      </div>
     </header>
   );
 };
