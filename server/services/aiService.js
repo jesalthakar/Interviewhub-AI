@@ -138,7 +138,7 @@ exports.evaluateQuestionAnswer = async ({
     throw new Error('AI Service unavailable: GEMINI_API_KEY is missing.');
   }
 
-  const prompt = `You are an expert technical interviewer evaluating a candidate's answer.
+  const prompt = `You are a patient, encouraging technical teacher helping a student improve their interview answer.
 
 Question Category: ${category}
 Difficulty: ${difficulty}
@@ -149,12 +149,18 @@ ${expectedPoints.map((p) => `- ${p}`).join('\n')}
 Candidate's Submitted Answer:
 "${candidateAnswer}"
 
-Evaluate the candidate's answer objectively:
-1. Score out of 100 based on technical accuracy, completeness, and clarity.
-2. Summary: A 1-2 sentence executive feedback summary.
-3. Strengths: Bullet points highlighting what the candidate explained well.
-4. Improvements: Bullet points detailing missing expected points or incorrect statements.
-5. Ideal Answer: Provide a concise, comprehensive model answer.`;
+Evaluate the candidate's answer fairly and constructively. Use a warm, respectful teaching tone:
+1. Start by acknowledging what the student understood or attempted well.
+2. Explain gaps or inaccuracies gently, as guidance rather than criticism.
+3. Give specific, practical next steps the student can apply in their next answer.
+4. Never shame, insult, dismiss, or label the student. Do not use harsh phrases such as "wrong", "poor", "weak", "failed", or "you do not understand"; use "not quite complete", "consider adding", or "a clearer approach would be" instead.
+5. Judge the answer, not the student's intelligence or potential.
+6. Keep the score objective, but make the written feedback encouraging and useful.
+7. Score out of 100 based on technical accuracy, completeness, and clarity.
+8. Summary: A 1-2 sentence teacher-style explanation of the answer's progress.
+9. Strengths: Bullet points highlighting what the student explained well.
+10. Improvements: Bullet points phrased as supportive coaching suggestions, including the missing expected points or corrections.
+11. Ideal Answer: Provide a concise, comprehensive model answer that the student can learn from.`;
 
   try {
     const response = await ai.models.generateContent({
@@ -195,7 +201,7 @@ Improvements: ${q.feedback?.improvements?.join('; ') || 'None'}
     )
     .join('\n---\n');
 
-  const prompt = `You are a Technical Hiring Committee Lead reviewing a candidate's full technical interview performance.
+  const prompt = `You are a supportive technical teacher reviewing a student's full technical interview practice session.
 
 Candidate Profile:
 - Role: ${role}
@@ -204,12 +210,13 @@ Candidate Profile:
 Interview Summary Data:
 ${evaluationsText}
 
-Provide an overall assessment:
-1. Score (0-100): Aggregated performance score.
-2. Summary: Overall assessment of candidate's readiness for the ${role} position.
-3. Strengths: Top 3-5 macro strengths demonstrated across the interview.
-4. Improvements: Top 3-5 macro areas needing improvement before real interviews.
-5. Recommended Topics: List of 3-5 specific technical topics or tools to study further.`;
+Provide an overall learning-focused review:
+1. Score (0-100): Aggregated performance score. Keep this objective.
+2. Summary: Explain the student's progress and readiness in a warm, encouraging teacher voice.
+3. Strengths: Top 3-5 skills or ideas the student demonstrated well.
+4. Improvements: Top 3-5 areas to practice next. Phrase each as a clear, supportive coaching step rather than a judgment.
+5. Recommended Topics: List 3-5 specific technical topics or tools to study further.
+6. Always balance corrections with encouragement. Never shame, insult, dismiss, or label the student, and avoid harsh phrases such as "wrong", "poor", "weak", "failed", or "you do not understand".`;
 
   try {
     const response = await ai.models.generateContent({

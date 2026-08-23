@@ -147,6 +147,30 @@ exports.getInterviewById = async (req, res, next) => {
 };
 
 /**
+ * Delete one of the authenticated user's interviews.
+ */
+exports.deleteInterview = async (req, res, next) => {
+  try {
+    const interview = await Interview.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.userId,
+    });
+
+    if (!interview) {
+      return res.status(404).json({ message: 'Interview not found' });
+    }
+
+    return res.status(200).json({
+      message: 'Interview deleted successfully',
+      interviewId: interview._id,
+    });
+  } catch (error) {
+    logger.error('Delete interview error', error);
+    next(error);
+  }
+};
+
+/**
  * Pause an in-progress interview while the candidate is away.
  */
 exports.pauseInterview = async (req, res, next) => {

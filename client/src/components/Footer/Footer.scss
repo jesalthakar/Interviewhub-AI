@@ -20,6 +20,26 @@
     color: $color-accent-lime;
 }
 
+.footer-auth-link {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: $color-text-secondary;
+    font: inherit;
+    cursor: pointer;
+    transition: color $transition-fast;
+}
+
+.footer-auth-link:hover,
+.footer-auth-link:focus-visible {
+    color: $color-accent-lime;
+}
+
+.footer-auth-link:focus-visible {
+    outline: 2px solid $color-accent-lime;
+    outline-offset: 4px;
+}
+
 .landing-footer p {
     margin-right: auto;
     color: #71806a;
@@ -30,8 +50,16 @@
     gap: 22px;
 }
 
+.landing-footer div button {
+    color: $color-text-secondary;
+}
+
 @include media-sm {
     .landing-footer {
+        width: calc(100% - 24px);
+        max-width: 520px;
+        margin-right: auto;
+        margin-left: auto;
         align-items: start;
         flex-wrap: wrap;
         gap: 16px;
@@ -44,6 +72,16 @@
 
     .landing-footer div {
         width: 100%;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        justify-content: stretch;
+        gap: 8px;
+    }
+
+    .landing-footer div a,
+    .landing-footer div button {
+        flex: 1 1 auto;
+        min-width: 30%;
+        padding: 6px 4px;
+        text-align: center;
     }
 }

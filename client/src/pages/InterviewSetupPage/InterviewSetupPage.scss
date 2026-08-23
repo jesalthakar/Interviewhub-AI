@@ -1,40 +1,131 @@
-.setup-header { position: absolute; top: 24px; right: 24px; display: flex; gap: 12px; }
+@use '../../styles/variables.scss' as *;
+
+.setup-topbar {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  right: 24px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.setup-page-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: $color-text-primary;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+
+.setup-page-brand em {
+  color: $color-accent-lime;
+  font-style: normal;
+}
+
+.setup-brand-mark {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid $color-accent-lime;
+  color: $color-accent-lime;
+  font-size: 11px;
+}
+
+.setup-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setup-header .button {
+  padding: 9px 14px;
+  background: $color-dark-secondary;
+  color: $color-accent-lime;
+  font-size: 12px;
+  line-height: 1.2;
+}
 
 .interview-setup-page {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0f172a;
-  padding: 32px 16px;
+  background: radial-gradient(circle at 15% 10%, rgba(204, 255, 0, .08), transparent 28%), linear-gradient(135deg, $color-dark-bg 0%, #11160e 100%);
+  padding: 80px 16px 48px;
 }
 
 .setup-form-container {
   width: 100%;
-  max-width: 620px;
+  max-width: 700px;
+  border: 1px solid #3a4630;
+  border-radius: 16px;
+  background: rgba(42, 49, 32, .72);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .28);
 }
 
 .setup-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 26px;
 }
 
+.setup-choice-group { display: grid; gap: 12px; min-width: 0; padding: 0; border: 0; }
+.setup-choice-group legend { margin-bottom: 2px; color: $color-text-primary; font-size: $font-size-sm; font-weight: $font-weight-semibold; }
+.setup-choice-grid { display: grid; gap: 10px; }
+.setup-choice-grid-levels { grid-template-columns: repeat(4, 1fr); }
+.setup-choice-grid-difficulty { grid-template-columns: repeat(3, 1fr); }
+.setup-choice { position: relative; display: grid; min-height: 92px; align-content: center; gap: 6px; padding: 17px 14px; border: 1px solid $color-input-border; border-radius: 10px; background: rgba(26, 31, 21, .7); color: $color-text-primary; text-align: left; cursor: pointer; transition: border-color $transition-fast, background $transition-fast, transform $transition-fast, box-shadow $transition-fast; }
+.setup-choice:hover { border-color: #80934c; background: rgba(48, 61, 38, .8); transform: translateY(-2px); }
+.setup-choice.is-selected { border-color: $color-accent-lime; background: rgba(204, 255, 0, .1); box-shadow: inset 0 0 0 1px rgba(204, 255, 0, .16), 0 8px 20px rgba(0, 0, 0, .14); }
+.setup-choice strong { font-size: 14px; }
+.setup-choice small { color: $color-text-secondary; font-size: 11px; line-height: 1.35; }
+.choice-check { position: absolute; top: 10px; right: 11px; width: 17px; height: 17px; border: 1px solid #536148; border-radius: 50%; color: $color-dark-bg; font-size: 11px; line-height: 16px; text-align: center; }
+.setup-choice.is-selected .choice-check { border-color: $color-accent-lime; background: $color-accent-lime; }
+
 .number-field {
-  width: 100%;
+  width: 74px;
+  min-width: 74px;
+  max-width: 74px;
   padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-  background: rgba(15, 23, 42, 0.9);
-  color: #f8fafc;
-  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid $color-input-border;
+  background: $color-dark-bg;
+  color: $color-text-primary;
+  font-size: $font-size-base;
   outline: none;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .number-field:focus {
-  border-color: #7dd3fc;
-  box-shadow: 0 0 0 2px rgba(125, 211, 252, 0.2);
+  border-color: $color-accent-lime;
+  box-shadow: 0 0 0 2px rgba(204, 255, 0, .12);
 }
+
+.question-count-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.question-presets { display: flex; gap: 8px; flex-wrap: wrap; }
+.question-preset { min-width: 44px; padding: 11px 12px; border: 1px solid $color-input-border; border-radius: 8px; background: $color-dark-bg; color: $color-text-secondary; cursor: pointer; transition: all $transition-fast; }
+.question-preset:hover { border-color: #80934c; color: $color-text-primary; }
+.question-preset.is-selected { border-color: $color-accent-lime; background: rgba(204, 255, 0, .1); color: $color-accent-lime; }
+.setup-field-hint { margin: 0; color: $color-text-secondary; font-size: $font-size-xs; }
+.setup-summary { display: grid; gap: 8px; padding: 20px; border: 1px solid rgba(204, 255, 0, .2); border-radius: 10px; background: linear-gradient(110deg, rgba(204, 255, 0, .1), rgba(204, 255, 0, .025)); }
+.summary-kicker { display: flex; align-items: center; gap: 8px; color: $color-accent-lime; font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.summary-pulse { width: 7px; height: 7px; border-radius: 50%; background: $color-accent-lime; box-shadow: 0 0 0 5px rgba(204, 255, 0, .1); }
+.setup-summary > strong { font-size: 21px; }
+.setup-summary > span { color: #d0d8c7; font-size: 13px; text-transform: capitalize; }
+.setup-summary i { display: inline-block; width: 4px; height: 4px; margin: 0 7px 3px; border-radius: 50%; background: #80934c; }
 
 .form-message {
   margin: 0;
@@ -44,7 +135,47 @@
 }
 
 .form-message-error {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fecaca;
+  background: rgba(255, 138, 196, .08);
+  border: 1px solid rgba(255, 138, 196, .35);
+  color: $color-error;
+}
+
+@media (max-width: 768px) {
+  .setup-topbar {
+    top: 16px;
+    left: 16px;
+    right: 16px;
+  }
+  .interview-setup-page { align-items: start; padding-top: 76px; }
+  .setup-choice-grid-levels { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .setup-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .setup-header {
+    width: 100%;
+    gap: 8px;
+  }
+  .setup-header .button { flex: 1 1 0; min-width: 0; padding: 10px 8px; font-size: 12px; white-space: normal; }
+  .setup-form-container { border-radius: 12px; }
+  .setup-choice-grid-difficulty { grid-template-columns: 1fr; }
+  .question-count-row {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+  .number-field {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+  .question-presets {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .question-preset { flex: 1; }
 }

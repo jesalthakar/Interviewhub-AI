@@ -1,14 +1,36 @@
 import axios, { AxiosHeaders } from 'axios';
 
 axios.defaults.withCredentials = true;
+const refreshClient = axios.create({ withCredentials: true });
 
 let accessToken: string | null = null;
+let restorePromise: Promise<boolean> | null = null;
 
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
 };
 
 export const getAccessToken = () => accessToken;
+
+export const restoreAccessToken = (): Promise<boolean> => {
+  if (restorePromise) return restorePromise;
+
+  restorePromise = refreshClient
+    .post('/api/auth/refresh-token', {})
+    .then(({ data }) => {
+      setAccessToken(data.token);
+      return true;
+    })
+    .catch(() => {
+      clearAuthState();
+      return false;
+    })
+    .finally(() => {
+      restorePromise = null;
+    });
+
+  return restorePromise;
+};
 
 export const clearAuthState = () => {
   accessToken = null;

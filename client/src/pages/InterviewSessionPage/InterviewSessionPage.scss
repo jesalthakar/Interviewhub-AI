@@ -1,6 +1,8 @@
 @use '../../styles/variables.scss' as *;
 
 .interview-session-page {
+  width: 100%;
+  box-sizing: border-box;
   min-height: 100vh;
   background-color: $color-dark-bg;
   color: $color-text-primary;
@@ -11,16 +13,31 @@
   flex-direction: column;
   gap: $spacing-lg;
   font-family: $font-family-primary;
+  overflow-x: hidden;
 
   @include media-md {
     padding: $spacing-md;
   }
 }
 
+:fullscreen .interview-session-page {
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+:fullscreen {
+  overflow-x: hidden;
+}
+
 /* ==========================================
    HEADER
    ========================================== */
 .session-header {
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,11 +47,14 @@
   flex-wrap: wrap;
 
   .header-meta {
+    min-width: 0;
+    max-width: 100%;
     .role-title {
       font-size: $font-size-xl;
       font-weight: $font-weight-semibold;
       color: $color-text-primary;
       margin: 0 0 $spacing-xs 0;
+      overflow-wrap: anywhere;
     }
 
     .meta-badges {
@@ -147,10 +167,26 @@
   100% { box-shadow: 0 0 0 0 rgba($color-error, 0); }
 }
 
+@media (max-width: 480px) {
+  .session-header .session-header-actions {
+    width: 100%;
+  }
+
+  .session-header .session-header-actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 9px 10px;
+    font-size: $font-size-xs;
+    line-height: 1.25;
+    white-space: normal;
+  }
+}
+
 /* ==========================================
    PROGRESS BAR & CHECKPOINTS
    ========================================== */
 .progress-container {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
@@ -246,6 +282,9 @@
    MAIN QUESTION CARD
    ========================================== */
 .question-card {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   background-color: $color-dark-secondary;
   border: 1px solid $color-input-border;
   border-radius: $border-radius-lg;

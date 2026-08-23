@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import Footer from '../../components/Footer/Footer';
 import Header from '../../components/Header/Header';
+import axios, { getAccessToken } from '../../services/auth';
 import './LandingPage.scss';
 
 const benefits = [
@@ -19,7 +20,24 @@ const steps = [
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
+    const isSignedIn = Boolean(getAccessToken());
+    const [hasInterviewHistory, setHasInterviewHistory] = useState(false);
     const [benefitAnimationKey, setBenefitAnimationKey] = useState(0);
+
+    React.useEffect(() => {
+        if (!isSignedIn) return;
+
+        const loadInterviewHistory = async (): Promise<void> => {
+            try {
+                const { data } = await axios.get<{ interviews: unknown[] }>('/api/interviews');
+                setHasInterviewHistory(data.interviews.length > 0);
+            } catch {
+                setHasInterviewHistory(false);
+            }
+        };
+
+        void loadInterviewHistory();
+    }, [isSignedIn]);
 
     const handleBenefitsClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
@@ -34,18 +52,18 @@ const LandingPage: React.FC = () => {
 
     return (
         <main className="landing-page">
-            <Header onBenefitsClick={handleBenefitsClick} onHowItWorksClick={handleHowItWorksClick} />
+            <Header onBenefitsClick={handleBenefitsClick} onHowItWorksClick={handleHowItWorksClick} showDashboard={isSignedIn && hasInterviewHistory} />
 
             <section className="landing-hero container">
-                <div className="hero-copy"><p className="eyebrow"><span /> AI-powered interview practice</p><h1>Walk into your next interview <strong>ready.</strong></h1><p className="hero-description">Practice the questions that matter for your role, sharpen your answers, and build confidence one session at a time.</p><div className="hero-actions"><Button onClick={() => navigate('/register')}>Start practicing <span aria-hidden="true">-&gt;</span></Button><Link className="text-link" to="/login">Already have an account? <strong>Sign in</strong></Link></div><div className="hero-proof"><span className="proof-dot" /> Built for focused practice, not endless scrolling</div></div>
-                <div className="hero-preview" aria-label="Interview session preview"><div className="preview-topline"><span>LIVE SESSION</span><span className="preview-timer">24:18</span></div><div className="preview-question"><span className="question-label">QUESTION 03 / 05</span><h2>How would you improve the performance of a React application?</h2></div><div className="preview-answer"><span>Your answer</span><div className="answer-lines"><i /><i /><i /></div></div><div className="preview-footer"><span><b /> AI interviewer is listening</span><span className="preview-arrow">-&gt;</span></div></div>
+                <div className="hero-copy"><p className="eyebrow"><span /> AI-powered interview practice</p><h1>Walk into your next interview <strong>ready.</strong></h1><p className="hero-description">Practice the questions that matter for your role, sharpen your answers, and build confidence one session at a time.</p><div className="hero-actions"><Button onClick={() => navigate(isSignedIn ? '/setup' : '/register')}>Start practicing</Button>{!isSignedIn && <Link className="text-link" to="/login">Already have an account? <strong>Sign in</strong></Link>}</div><div className="hero-proof"><span className="proof-dot" /> Built for focused practice, not endless scrolling</div></div>
+                <div className="hero-preview" aria-label="Interview session preview"><div className="preview-topline"><span>LIVE SESSION</span><span className="preview-timer">24:18</span></div><div className="preview-question"><span className="question-label">QUESTION 03 / 05</span><h2>How would you improve the performance of a React application?</h2></div><div className="preview-answer"><span>Your answer</span><div className="answer-lines"><i /><i /><i /></div></div><div className="preview-footer"><span><b /> AI interviewer is listening</span></div></div>
             </section>
 
             <section className="benefits-section container" id="benefits"><div className="section-intro"><p className="eyebrow"><span /> The practice advantage</p><h2>Less guessing.<br /><strong>More progress.</strong></h2></div><div className="benefits-grid" key={benefitAnimationKey}>{benefits.map((benefit) => <article className="benefit" key={benefit.number}><span className="benefit-number">{benefit.number}</span><h3>{benefit.title}</h3><p>{benefit.text}</p></article>)}</div></section>
 
             <section className="steps-section" id="how-it-works"><div className="container"><div className="section-intro"><p className="eyebrow"><span /> Your next session</p><h2>Three steps to a<br /><strong>better interview.</strong></h2></div><div className="steps-grid">{steps.map(([number, title, text]) => <article className="step" key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
 
-            <section className="final-cta container"><div><p className="eyebrow"><span /> Start where you are</p><h2>Your next best answer<br /><strong>starts here.</strong></h2></div><Button onClick={() => navigate('/register')}>Create your free account <span aria-hidden="true">-&gt;</span></Button></section>
+            <section className="final-cta container"><div><p className="eyebrow"><span /> Start where you are</p><h2>Your next best answer<br /><strong>starts here.</strong></h2></div><Button onClick={() => navigate(isSignedIn ? '/setup' : '/register')}>{isSignedIn ? 'Start a new interview' : 'Create your free account'}</Button></section>
 
             <Footer onFeaturesClick={() => setBenefitAnimationKey((previousKey) => previousKey + 1)} />
         </main>
