@@ -58,7 +58,7 @@ const LoginPage: React.FC = () => {
 
       setAccessToken(data.token);
       setSuccessMessage('Signed in successfully.');
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
         ? error.response?.data?.message

@@ -55,6 +55,76 @@ $landing-body: 'Trebuchet MS', 'Arial Rounded MT Bold', sans-serif;
     color: $color-accent-lime;
 }
 
+.landing-auth-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 0 14px;
+    margin: -12px 0 -14px;
+    z-index: 10;
+}
+.landing-auth-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid rgba($color-accent-lime, .6);
+    border-radius: 50%;
+    background: rgba($color-accent-lime, .08);
+    color: $color-accent-lime;
+    font: inherit;
+    cursor: pointer;
+    transition: transform $transition-fast, border-color $transition-fast, background $transition-fast;
+}
+.landing-auth-trigger svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+.landing-auth-trigger:hover,
+.landing-auth-trigger:focus-visible {
+    transform: translateY(-1px);
+    border-color: $color-accent-lime;
+    background: rgba($color-accent-lime, .12);
+    color: $color-accent-lime;
+}
+.landing-auth-trigger:focus-visible {
+    outline: 2px solid $color-accent-lime;
+    outline-offset: 3px;
+}
+.landing-auth-popover {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 150px;
+    padding: 6px;
+    border: 1px solid $color-input-border;
+    border-radius: $border-radius-md;
+    background: $color-dark-secondary;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .3);
+}
+.landing-auth-popover button {
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: $border-radius-sm;
+    background: transparent;
+    color: $color-text-primary;
+    font: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+.landing-auth-popover button:hover,
+.landing-auth-popover button:focus-visible {
+    background: rgba($color-accent-lime, .1);
+    color: $color-accent-lime;
+    outline: none;
+}
+
 .landing-header .button {
     padding: 11px 18px;
     font-family: $landing-body;
@@ -64,7 +134,16 @@ $landing-body: 'Trebuchet MS', 'Arial Rounded MT Bold', sans-serif;
 }
 
 @include media-md {
+    .landing-header {
+        gap: 18px;
+    }
+
+    .brand {
+        min-width: 0;
+    }
+
     .landing-nav {
+        flex: 0 0 auto;
         gap: 14px;
     }
 
@@ -75,10 +154,41 @@ $landing-body: 'Trebuchet MS', 'Arial Rounded MT Bold', sans-serif;
 
 @include media-sm {
     .landing-header {
+        width: calc(100% - 24px);
+        max-width: 520px;
+        margin-right: auto;
+        margin-left: auto;
+        align-items: center;
         padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .brand {
+        gap: 8px;
+        font-size: 16px;
+        letter-spacing: .02em;
+    }
+
+    .brand-mark {
+        width: 30px;
+        height: 30px;
     }
 
     .landing-header .button {
-        padding: 10px 13px;
+        max-width: 124px;
+        padding: 10px 12px;
+        font-size: 12px;
+        line-height: 1.2;
+        white-space: normal;
     }
+
+    .landing-auth-menu {
+        padding: 8px 0 10px;
+        margin: -8px 0 -10px;
+    }
+    .landing-auth-trigger {
+        width: 38px;
+        height: 38px;
+    }
+    .landing-auth-popover { top: calc(100% + 10px); }
 }

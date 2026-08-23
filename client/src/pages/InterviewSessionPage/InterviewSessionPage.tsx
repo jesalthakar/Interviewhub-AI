@@ -10,12 +10,14 @@ import SessionHeader from '../../components/InterviewSession/SessionHeader';
 import { ErrorState, LoadingState } from '../../components/InterviewSession/StatePanels';
 import { useInterviewSession } from '../../hooks/useInterviewSession';
 import { useInterviewTimer } from '../../hooks/useInterviewTimer';
+import { enterFullscreen, exitFullscreen } from '../../services/fullscreen';
 import './InterviewSessionPage.scss';
 
 const InterviewSessionPage: React.FC = () => {
   const navigate = useNavigate();
   const [showExitModal, setShowExitModal] = React.useState(false);
   const [isExiting, setIsExiting] = React.useState(false);
+  const isLeavingRef = React.useRef(false);
   const {
     interview,
     currentIndex,
@@ -43,6 +45,23 @@ const InterviewSessionPage: React.FC = () => {
     interview,
     onExpire: executeFinishInterview,
   });
+
+  const handleCancelExit = async (): Promise<void> => {
+    isLeavingRef.current = false;
+    setShowExitModal(false);
+    await enterFullscreen();
+  };
+
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && !isLeavingRef.current) {
+        setShowExitModal(true);
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   if (isLoading) {
     return <LoadingState />;
@@ -114,7 +133,11 @@ const InterviewSessionPage: React.FC = () => {
           totalQuestions={interview.questionCount}
           isFinishing={isFinishing}
           onCancel={() => setShowConfirmModal(false)}
-          onConfirm={executeFinishInterview}
+          onConfirm={() => {
+            isLeavingRef.current = true;
+            void exitFullscreen();
+            void executeFinishInterview();
+          }}
         />
       )}
 
@@ -124,15 +147,18 @@ const InterviewSessionPage: React.FC = () => {
           message="Your submitted answers will be saved. This interview will remain in progress, and the timer will pause while you are away."
           confirmLabel="Leave interview"
           isProcessing={isExiting}
-          onCancel={() => setShowExitModal(false)}
+          onCancel={() => void handleCancelExit()}
           onConfirm={async () => {
             if (!interview) return;
 
             try {
+              isLeavingRef.current = true;
               setIsExiting(true);
               await axios.patch(`/api/interviews/${interview._id}/pause`);
+              await exitFullscreen();
               navigate('/dashboard');
             } catch {
+              isLeavingRef.current = false;
               setIsExiting(false);
             }
           }}

@@ -11,5 +11,5 @@ export const ProtectedRoute: React.FC<RouteGuardProps> = ({ children }) => (
 );
 
 export const PublicOnlyRoute: React.FC<RouteGuardProps> = ({ children }) => (
-  getAccessToken() ? <Navigate to="/dashboard" replace /> : children
+  getAccessToken() ? <Navigate to="/" replace /> : children
 );

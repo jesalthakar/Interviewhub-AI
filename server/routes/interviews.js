@@ -4,6 +4,7 @@ const {
   getUserInterviews,
   createInterview,
   getInterviewById,
+  deleteInterview,
   pauseInterview,
   resumeInterview,
   submitAnswer,
@@ -20,6 +21,9 @@ router.post('/', authenticate, createInterview);
 
 // GET /api/interviews/:id - Fetch interview details
 router.get('/:id', authenticate, getInterviewById);
+
+// DELETE /api/interviews/:id - Delete an interview owned by the authenticated user
+router.delete('/:id', authenticate, deleteInterview);
 
 // PATCH /api/interviews/:id/pause - Pause the interview timer while away
 router.patch('/:id/pause', authenticate, pauseInterview);

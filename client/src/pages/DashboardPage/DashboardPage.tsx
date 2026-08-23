@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import axios, { signOut } from '../../services/auth';
+import { enterFullscreen } from '../../services/fullscreen';
 import './DashboardPage.scss';
 
 type Interview = {
@@ -28,6 +30,8 @@ const DashboardPage: React.FC = () => {
     const [interviews, setInterviews] = useState<Interview[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+    const [interviewToDelete, setInterviewToDelete] = useState<Interview | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const loadInterviews = async (): Promise<void> => {
@@ -53,6 +57,21 @@ const DashboardPage: React.FC = () => {
         ? Math.max(...scoredInterviews.map((interview) => interview.overallFeedback?.score || 0))
         : 0;
 
+    const handleDeleteInterview = async (): Promise<void> => {
+        if (!interviewToDelete || isDeleting) return;
+
+        setIsDeleting(true);
+        try {
+            await axios.delete(`/api/interviews/${interviewToDelete._id}`);
+            setInterviews((previous) => previous.filter((interview) => interview._id !== interviewToDelete._id));
+            setInterviewToDelete(null);
+        } catch {
+            setErrorMessage('Unable to delete this interview. Please try again.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     return (
         <main className="dashboard-page">
             <header className="dashboard-header">
@@ -61,8 +80,9 @@ const DashboardPage: React.FC = () => {
                     <span>InterviewHub <em>AI</em></span>
                 </div>
                 <div className="dashboard-header-actions">
+                    <Button variant="secondary" onClick={() => navigate('/')}>Home</Button>
                     <Button variant="secondary" onClick={() => void signOut()}>Sign out</Button>
-                    <Button onClick={() => navigate('/setup')}>New interview <span aria-hidden="true">-&gt;</span></Button>
+                    <Button onClick={() => navigate('/setup')}>New interview</Button>
                 </div>
             </header>
 
@@ -90,11 +110,12 @@ const DashboardPage: React.FC = () => {
                             <div className="interview-card-status"><span className={`status-dot status-${interview.status}`} /><span>{interview.status === 'completed' ? 'Completed' : interview.status === 'in_progress' ? 'In progress' : interview.status === 'abandoned' ? 'Abandoned' : 'Not started'}</span></div>
                             <h3>{interview.role}</h3>
                             <div className="interview-card-details"><div><span>Level</span><strong>{interview.experienceLevel}</strong></div><div><span>Difficulty</span><strong>{interview.difficulty}</strong></div><div><span>Questions</span><strong>{interview.questionCount}</strong></div><div className="interview-card-result">{interview.status === 'completed' && typeof interview.overallFeedback?.score === 'number' ? <strong>{interview.overallFeedback.score}%</strong> : <strong className="score-muted">{interview.status === 'in_progress' ? 'In progress' : 'Not scored'}</strong>}<small>{formatDate(interview.completedAt || interview.updatedAt)}</small></div></div>
-                            <div className="interview-card-actions"><Button variant="secondary" onClick={() => navigate(interview.status === 'in_progress' ? `/interviews/${interview._id}/session` : `/interviews/${interview._id}/results`)}>{interview.status === 'in_progress' ? 'Resume interview' : 'Review performance'}</Button></div>
+                            <div className="interview-card-actions"><Button variant="secondary" onClick={() => { if (interview.status === 'in_progress') void enterFullscreen(); navigate(interview.status === 'in_progress' ? `/interviews/${interview._id}/session` : `/interviews/${interview._id}/results`); }}>{interview.status === 'in_progress' ? 'Resume interview' : 'Review performance'}</Button><button className="interview-card-delete" type="button" aria-label={`Delete ${interview.role} interview`} title="Delete interview" onClick={() => setInterviewToDelete(interview)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 7h16" /><path d="M10 11v6M14 11v6" /><path d="M6 7l1 13h10l1-13" /><path d="M9 7V4h6v3" /></svg></button></div>
                         </article>)}
                     </div>}
                 </section>
             </div>
+            {interviewToDelete && <ConfirmModal title="Delete interview?" message={`This will permanently remove your ${interviewToDelete.role} interview and its feedback.`} confirmLabel="Delete interview" tone="danger" isProcessing={isDeleting} onCancel={() => setInterviewToDelete(null)} onConfirm={() => void handleDeleteInterview()} />}
         </main>
     );
 };

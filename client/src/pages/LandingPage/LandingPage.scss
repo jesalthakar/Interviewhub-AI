@@ -488,13 +488,24 @@ $landing-display: 'Cooper Black', 'Arial Rounded MT Bold', 'Rockwell Extra Bold'
 }
 
 @include media-sm {
+    .landing-page > .container,
+    .landing-page > .landing-header {
+        width: calc(100% - 24px);
+        max-width: 520px;
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
     .landing-hero {
+        margin-right: auto;
+        margin-left: auto;
         padding-top: 50px;
         padding-bottom: 75px;
     }
 
     .hero-copy h1 {
-        font-size: 45px;
+        font-size: clamp(38px, 12vw, 45px);
+        line-height: 1;
     }
 
     .hero-description {
@@ -502,13 +513,25 @@ $landing-display: 'Cooper Black', 'Arial Rounded MT Bold', 'Rockwell Extra Bold'
     }
 
     .hero-actions {
+        width: 100%;
         align-items: start;
         flex-direction: column;
         gap: 18px;
     }
 
+    .hero-actions .button {
+        width: 100%;
+        max-width: 280px;
+    }
+
     .hero-preview {
+        width: 100%;
+        max-width: 360px;
+        margin-right: auto;
+        margin-left: auto;
         padding: 16px;
+        box-shadow: 10px 10px 0 rgba(204, 255, 0, .08);
+        transform: rotate(0deg);
     }
 
     .preview-question {
@@ -519,10 +542,29 @@ $landing-display: 'Cooper Black', 'Arial Rounded MT Bold', 'Rockwell Extra Bold'
         font-size: 22px;
     }
 
+    .preview-footer {
+        align-items: start;
+        gap: 12px;
+        line-height: 1.4;
+    }
+
     .benefits-section,
     .steps-section {
         padding-top: 75px;
         padding-bottom: 80px;
+    }
+
+    .benefits-section,
+    .final-cta {
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .steps-section > .container {
+        width: calc(100% - 24px);
+        max-width: 500px;
+        padding-right: 12px;
+        padding-left: 12px;
     }
 
     .benefits-grid,
@@ -555,6 +597,11 @@ $landing-display: 'Cooper Black', 'Arial Rounded MT Bold', 'Rockwell Extra Bold'
 
     .benefit h3 {
         margin-top: 28px;
+    }
+
+    .step {
+        min-height: 0;
+        padding: 22px;
     }
 
     .section-intro h2,
