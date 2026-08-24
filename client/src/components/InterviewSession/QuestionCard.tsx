@@ -46,6 +46,14 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
           placeholder="Type your response clearly. Include key principles, syntax examples, and trade-offs..."
           value={answerText}
           onChange={(event) => onAnswerChange(event.target.value)}
+          onFocus={(event) => {
+            requestAnimationFrame(() => {
+              event.currentTarget.scrollIntoView({
+                block: 'center',
+                behavior: 'smooth',
+              });
+            });
+          }}
           disabled={isSubmitting || isAnswered}
           rows={8}
           maxLength={3000}

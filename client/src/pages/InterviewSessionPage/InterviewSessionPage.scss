@@ -38,24 +38,28 @@
    ========================================== */
 .session-header {
   min-width: 0;
-  display: flex;
+  min-height: 100dvh;
   align-items: center;
   justify-content: space-between;
   padding-bottom: $spacing-md;
+  padding-bottom: calc($spacing-lg + env(safe-area-inset-bottom));
   border-bottom: 1px solid $color-input-border;
   gap: $spacing-md;
   flex-wrap: wrap;
 
   .header-meta {
     min-width: 0;
+  overflow-y: auto;
     max-width: 100%;
+  -webkit-overflow-scrolling: touch;
     .role-title {
       font-size: $font-size-xl;
       font-weight: $font-weight-semibold;
       color: $color-text-primary;
       margin: 0 0 $spacing-xs 0;
-      overflow-wrap: anywhere;
+  min-height: 100dvh;
     }
+  overflow-y: auto;
 
     .meta-badges {
       display: flex;
@@ -64,11 +68,14 @@
       .badge {
         font-size: $font-size-xs;
         padding: 4px 10px;
+      min-height: 140px;
+      max-height: 42dvh;
         border-radius: $border-radius-full;
         text-transform: capitalize;
         font-weight: $font-weight-medium;
 
         &.badge-level {
+      overflow-y: auto;
           background-color: rgba($color-accent-lime, 0.15);
           color: $color-accent-lime;
           border: 1px solid rgba($color-accent-lime, 0.3);
@@ -81,6 +88,11 @@
         }
       }
     }
+
+  .question-card .answer-section .answer-textarea {
+    min-height: 110px;
+    max-height: 34dvh;
+  }
   }
 
   .session-timer {
