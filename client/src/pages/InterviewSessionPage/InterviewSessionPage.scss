@@ -4,9 +4,11 @@
   width: 100%;
   box-sizing: border-box;
   min-height: 100vh;
+  min-height: 100dvh;
   background-color: $color-dark-bg;
   color: $color-text-primary;
   padding: $spacing-lg $spacing-xl;
+  padding-bottom: calc($spacing-lg + env(safe-area-inset-bottom));
   max-width: 1000px;
   margin: 0 auto;
   display: flex;
@@ -14,6 +16,8 @@
   gap: $spacing-lg;
   font-family: $font-family-primary;
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 
   @include media-md {
     padding: $spacing-md;
@@ -25,8 +29,10 @@
   max-width: 100vw;
   box-sizing: border-box;
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 :fullscreen {
@@ -38,28 +44,25 @@
    ========================================== */
 .session-header {
   min-width: 0;
-  min-height: 100dvh;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   padding-bottom: $spacing-md;
-  padding-bottom: calc($spacing-lg + env(safe-area-inset-bottom));
   border-bottom: 1px solid $color-input-border;
   gap: $spacing-md;
   flex-wrap: wrap;
 
   .header-meta {
     min-width: 0;
-  overflow-y: auto;
     max-width: 100%;
-  -webkit-overflow-scrolling: touch;
+
     .role-title {
       font-size: $font-size-xl;
       font-weight: $font-weight-semibold;
       color: $color-text-primary;
       margin: 0 0 $spacing-xs 0;
-  min-height: 100dvh;
+      overflow-wrap: anywhere;
     }
-  overflow-y: auto;
 
     .meta-badges {
       display: flex;
@@ -68,14 +71,11 @@
       .badge {
         font-size: $font-size-xs;
         padding: 4px 10px;
-      min-height: 140px;
-      max-height: 42dvh;
         border-radius: $border-radius-full;
         text-transform: capitalize;
         font-weight: $font-weight-medium;
 
         &.badge-level {
-      overflow-y: auto;
           background-color: rgba($color-accent-lime, 0.15);
           color: $color-accent-lime;
           border: 1px solid rgba($color-accent-lime, 0.3);
@@ -88,11 +88,6 @@
         }
       }
     }
-
-  .question-card .answer-section .answer-textarea {
-    min-height: 110px;
-    max-height: 34dvh;
-  }
   }
 
   .session-timer {
@@ -191,6 +186,11 @@
     font-size: $font-size-xs;
     line-height: 1.25;
     white-space: normal;
+  }
+
+  .question-card .answer-section .answer-textarea {
+    min-height: 110px;
+    max-height: 34dvh;
   }
 }
 
@@ -351,6 +351,9 @@
       border: 1px solid $color-input-border;
       border-radius: $border-radius-md;
       padding: $spacing-md;
+      min-height: 140px;
+      max-height: 42dvh;
+      overflow-y: auto;
       color: $color-text-primary;
       font-family: inherit;
       font-size: $font-size-base;

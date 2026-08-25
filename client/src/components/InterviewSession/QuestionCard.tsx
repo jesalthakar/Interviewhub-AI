@@ -47,8 +47,9 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
           value={answerText}
           onChange={(event) => onAnswerChange(event.target.value)}
           onFocus={(event) => {
+            const target = event.currentTarget;
             requestAnimationFrame(() => {
-              event.currentTarget.scrollIntoView({
+              target?.scrollIntoView({
                 block: 'center',
                 behavior: 'smooth',
               });
